@@ -3,23 +3,20 @@ extern "C" {
 #endif
 
 /**
-  @file       wmbus_crc.c
+  @file       sf_crc.c
   @copyright  STACKFORCE GmbH, Heitersheim, Germany, http://www.stackforce.de
   @author     STACKFORCE
   @brief      Functions and types for CRC checks.
 */
-
-#define __DECL_CRC_H__
 
 /*==============================================================================
                             INCLUDE FILES
 ==============================================================================*/
 
 /* Global includes */
-#include "inc\pub\utils\wmbus_typedefs.h"
 
 /* Module includes */
-#include "inc\prv\utils\wmbus_crc.h"
+#include "sf_crc.h"
 
 /*==============================================================================
                             DEFINES

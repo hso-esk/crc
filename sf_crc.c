@@ -3,21 +3,22 @@ extern "C" {
 #endif
 
 /**
-  @file       sf_crc.c
-  @copyright  STACKFORCE GmbH, Heitersheim, Germany, http://www.stackforce.de
-  @author     STACKFORCE
-  @brief      Functions and types for CRC checks.
-*/
-
-/*==============================================================================
-                            INCLUDE FILES
-==============================================================================*/
+ * @code
+ *  ___ _____ _   ___ _  _____ ___  ___  ___ ___
+ * / __|_   _/_\ / __| |/ / __/ _ \| _ \/ __| __|
+ * \__ \ | |/ _ \ (__| ' <| _| (_) |   / (__| _|
+ * |___/ |_/_/ \_\___|_|\_\_| \___/|_|_\\___|___|
+ * embedded.connectivity.solutions.==============
+ * @endcode
+ *
+ * @file
+ * @copyright  STACKFORCE GmbH, Heitersheim, Germany, http://www.stackforce.de
+ * @author     STACKFORCE
+ * @brief      Cyclic Redundancy Check (CRC) error-detecting code.
+ */
 
 #include "sf_crc.h"
 
-/*==============================================================================
-                            DEFINES
-==============================================================================*/
 /*! x^16 + x^13 + x^12 + x^11 + x^10 + x^8 + x^6 + x^5 + x^2 + 1
     0x13D65 required when manually computing */
 #define POLYNOMAL                     0x3D65U
@@ -30,11 +31,9 @@ extern "C" {
 /*! Set 1 if CRC tables have to be used. This is faster than bit-by-bit
     calculation but needs more memory. */
 #warning CRC_TABLE set to 1. Untested feature enabled.
-#endif /* CRC_TABLE */
+#endif
 
-/*==============================================================================
-                            VARIABLES
-==============================================================================*/
+
 #if CRC_TABLE
 /* Precalculated CRC table for lookup */
 static const uint16_t crc_table[] = {
@@ -71,16 +70,10 @@ static const uint16_t crc_table[] = {
   0xc83eU, 0xf55bU, 0xb2f4U, 0x8f91U, 0x3daaU, 0x00cfU, 0x4760U, 0x7a05U,
   0x1e73U, 0x2316U, 0x64b9U, 0x59dcU, 0xebe7U, 0xd682U, 0x912dU, 0xac48U
 };
-#endif /* CRC_TABLE */
+#endif
 
-/*==============================================================================
-                            FUNCTIONS
-==============================================================================*/
 
 #if CRC_TABLE
-/*============================================================================*/
-/*! crc_calc() */
-/*============================================================================*/
 uint16_t crc_calc(uint16_t i_init, uint8_t *pc_data, uint16_t i_len)
 {
   /* Temporary variable */
@@ -90,12 +83,10 @@ uint16_t crc_calc(uint16_t i_init, uint8_t *pc_data, uint16_t i_len)
     i_init = (i_init << 8U) ^ crc_table[((i_init >> 8U) & 0xFFU) ^ pc_data[i]];
 
   return i_init;
-} /* crc_calc() */
+}
+
 
 #else
-/*============================================================================*/
-/*! crc_calc() */
-/*============================================================================*/
 uint16_t crc_calc(uint16_t i_init, uint8_t *pc_data, uint16_t i_len)
 {
   /* Temporary variables */
@@ -119,18 +110,16 @@ uint16_t crc_calc(uint16_t i_init, uint8_t *pc_data, uint16_t i_len)
         i_crc = (i_crc << 1U) ^ POLYNOMAL;
       else
          i_crc <<= 1U;
-    } /* for */
+    }
 
     i_crc &= 0xFFFFU;
-  } /* for */
+  }
 
   return i_crc;
-} /* crc_calc() */
-#endif /* CRC_TABLE */
+}
+#endif
 
-/*============================================================================*/
-/*! crc_calc_finalize() */
-/*============================================================================*/
+
 uint16_t crc_calc_finalize(uint8_t *pc_data, uint16_t i_len)
 {
   /* Stores the current calculated crc value */
@@ -141,11 +130,9 @@ uint16_t crc_calc_finalize(uint8_t *pc_data, uint16_t i_len)
   i_crc = crc_finalize(i_crc);
 
   return i_crc;
-} /* crc_calc_finalize() */
+}
 
-/*============================================================================*/
-/*! crc_finalize() */
-/*============================================================================*/
+
 uint16_t crc_finalize(uint16_t i_crc)
 {
   /* Stores the current calculated crc value */
@@ -154,7 +141,7 @@ uint16_t crc_finalize(uint16_t i_crc)
   i_return = ~(i_crc);
 
   return i_return;
-} /* crc_finalize() */
+}
 
 #ifdef __cplusplus
 }

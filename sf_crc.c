@@ -25,12 +25,11 @@ extern "C" {
 
 #ifndef CRC_TABLE
 #warning CRC_TABLE not set, defaulting to 0.
+/*!
+ * Set 1 if CRC tables have to be used.
+ * This is faster than bit-by-bit calculation but needs more memory.
+ */
 #define CRC_TABLE 0
-#endif
-#if CRC_TABLE
-/*! Set 1 if CRC tables have to be used. This is faster than bit-by-bit
-    calculation but needs more memory. */
-#warning CRC_TABLE set to 1. Untested feature enabled.
 #endif
 
 

@@ -15,6 +15,11 @@
 cmake_minimum_required (VERSION 2.8)
 project(crc)
 
+set(CRC_VERSION_MAJOR 1)
+set(CRC_VERSION_MINOR 0)
+set(CRC_VERSION_PATCH 0)
+set(CRC_VERSION ${CRC_VERSION_MAJOR}.${CRC_VERSION_MINOR}.${CRC_VERSION_PATCH} )
+
 add_definitions(-DCRC_TABLE=0)
 
 if(STATIC_BUILD)
@@ -27,3 +32,4 @@ endif()
 # add_subdirectory() work.
 target_include_directories(crc PUBLIC ${PROJECT_SOURCE_DIR})
 
+set_target_properties(crc PROPERTIES VERSION ${CRC_VERSION})

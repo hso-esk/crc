@@ -22,11 +22,7 @@ set(CRC_VERSION ${CRC_VERSION_MAJOR}.${CRC_VERSION_MINOR}.${CRC_VERSION_PATCH} )
 
 add_definitions(-DCRC_TABLE=0)
 
-if(STATIC_BUILD)
-	add_library(crc STATIC ${PROJECT_SOURCE_DIR}/sf_crc.c)
-else()
-	add_library(crc SHARED ${PROJECT_SOURCE_DIR}/sf_crc.c)
-endif()
+add_library(crc  ${PROJECT_SOURCE_DIR}/sf_crc.c)
 
 # This is necessary for making the inclusion of this module via
 # add_subdirectory() work.

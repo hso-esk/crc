@@ -23,7 +23,14 @@ set(CRC_VERSION ${CRC_VERSION_MAJOR}.${CRC_VERSION_MINOR}.${CRC_VERSION_PATCH} )
 # Build static libraries only
 option(BUILD_SHARED_LIBS "Set to ON to build shared libraries" OFF)
 
-add_definitions(-DCRC_TABLE=0)
+# Use CRC calculation as default
+option(CRC_TABLE "Set to ON to use a look up table for crc calculation" OFF)
+
+if(CRC_TABLE)
+   add_definitions(-DCRC_TABLE=1)
+else()
+   add_definitions(-DCRC_TABLE=0)
+endif()
 
 add_library(crc  ${PROJECT_SOURCE_DIR}/sf_crc.c)
 

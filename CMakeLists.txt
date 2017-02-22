@@ -20,6 +20,9 @@ set(CRC_VERSION_MINOR 1)
 set(CRC_VERSION_PATCH 2)
 set(CRC_VERSION ${CRC_VERSION_MAJOR}.${CRC_VERSION_MINOR}.${CRC_VERSION_PATCH} )
 
+# Build static libraries only
+option(BUILD_SHARED_LIBS "Set to ON to build shared libraries" OFF)
+
 add_definitions(-DCRC_TABLE=0)
 
 add_library(crc  ${PROJECT_SOURCE_DIR}/sf_crc.c)

@@ -38,7 +38,11 @@ else()
    add_definitions(-DCRC_TABLE=0)
 endif()
 
-add_library(crc  ${PROJECT_SOURCE_DIR}/sf_crc.c)
+set (CRC_SOURCES
+     ${PROJECT_SOURCE_DIR}/sf_crc.c
+     )
+
+add_library(crc  ${CRC_SOURCES})
 
 # This is necessary for making the inclusion of this module via
 # add_subdirectory() work.

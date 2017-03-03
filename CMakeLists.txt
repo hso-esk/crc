@@ -29,3 +29,6 @@ add_library(crc  ${PROJECT_SOURCE_DIR}/sf_crc.c)
 target_include_directories(crc PUBLIC ${PROJECT_SOURCE_DIR})
 
 set_target_properties(crc PROPERTIES VERSION ${CRC_VERSION})
+
+install(TARGETS crc DESTINATION lib)
+install(FILES ${PROJECT_SOURCE_DIR}/sf_crc.h DESTINATION include)

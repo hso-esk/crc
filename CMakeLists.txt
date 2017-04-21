@@ -12,16 +12,16 @@
 ## @author     STACKFORCE
 ## @brief      Cyclic Redundancy Check (CRC) error-detecting code.
 ##
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 3.2)
 project(crc)
 
 #---------------------------------------------------------------------------------------
 # PRODUCT AND VERSION
 #---------------------------------------------------------------------------------------
-set(CRC_VERSION_MAJOR 0)
-set(CRC_VERSION_MINOR 1)
-set(CRC_VERSION_PATCH 2)
-set(CRC_VERSION ${CRC_VERSION_MAJOR}.${CRC_VERSION_MINOR}.${CRC_VERSION_PATCH} )
+set("${PROJECT_NAME}_VERSION_MAJOR" 0)
+set("${PROJECT_NAME}_VERSION_MINOR" 1)
+set("${PROJECT_NAME}_VERSION_PATCH" 2)
+set("${PROJECT_NAME}_VERSION" ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH} )
 
 #---------------------------------------------------------------------------------------
 # TARGET
@@ -33,29 +33,92 @@ option(BUILD_SHARED_LIBS "Set to ON to build shared libraries" OFF)
 option(CRC_TABLE "Set to ON to use a look up table for crc calculation" OFF)
 
 if(CRC_TABLE)
-   add_definitions(-DCRC_TABLE=1)
+     add_definitions(-DCRC_TABLE=1)
 else()
-   add_definitions(-DCRC_TABLE=0)
+     add_definitions(-DCRC_TABLE=0)
 endif()
 
-set (CRC_SOURCES
-     ${PROJECT_SOURCE_DIR}/sf_crc.c
-     )
+file(GLOB "${PROJECT_NAME}_SOURCES"
+     ${PROJECT_SOURCE_DIR}/*.c)
 
-add_library(crc  ${CRC_SOURCES})
+file(GLOB "${PROJECT_NAME}_HEADERS"
+     ${PROJECT_SOURCE_DIR}/*.h)
 
-# This is necessary for making the inclusion of this module via
-# add_subdirectory() work.
-target_include_directories(crc PUBLIC ${PROJECT_SOURCE_DIR})
-# NOTE target_include_directories(PUBLIC) is not enough to get Kdevelop
-# to find the includes, hence the are defined again with INTERFACE_INCLUDE_DIRECTORIES
+add_library(crc ${${PROJECT_NAME}_SOURCES})
+
+# For inclusion via  add_subdirectory() work.
+target_include_directories(crc PRIVATE ${PROJECT_SOURCE_DIR})
+
+# For inclusing via find_package() from build 
+target_include_directories(crc INTERFACE "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>")
+
+# For inclusing via find_package() from install
+target_include_directories(crc INTERFACE "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
+
+# Set the version
 set_target_properties(crc PROPERTIES
-    INTERFACE_INCLUDE_DIRECTORIES ${PROJECT_SOURCE_DIR}
-    VERSION  ${CRC_VERSION}
+     VERSION  ${${PROJECT_NAME}_VERSION}
 )
 
 #---------------------------------------------------------------------------------------
-# INSTALLATION
+# INSTALLATION + CREATING PACKAGE
 #---------------------------------------------------------------------------------------
-install(TARGETS crc DESTINATION lib)
-install(FILES ${PROJECT_SOURCE_DIR}/sf_crc.h DESTINATION include)
+
+include(GNUInstallDirs)
+
+#  Set variables
+set(config_install_dir "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
+set(generated_dir "${CMAKE_CURRENT_BINARY_DIR}/generated")
+
+# Configuration
+set(version_config "${generated_dir}/${PROJECT_NAME}-config-version.cmake")
+set(project_config "${generated_dir}/${PROJECT_NAME}-config.cmake")
+set(targets_export_name "${PROJECT_NAME}Targets")
+
+# Generate a package version file
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+     "${version_config}"
+     VERSION ${${PROJECT_NAME}_VERSION}
+     COMPATIBILITY AnyNewerVersion
+)
+
+configure_package_config_file(
+     "${PROJECT_SOURCE_DIR}/cmake/Config.cmake.in"
+     "${project_config}"
+     INSTALL_DESTINATION "${config_install_dir}"
+)
+
+
+# Install targets
+install(
+     TARGETS crc
+     EXPORT ${targets_export_name}
+     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+     INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
+# Exported targets for build directory
+export(EXPORT ${PROJECT_NAME}Targets
+     FILE ${project_config}
+)
+
+# Exported targets for installation
+install(EXPORT ${PROJECT_NAME}Targets
+     DESTINATION ${config_install_dir}
+     FILE ${PROJECT_NAME}-targets.cmake
+)
+
+# Install headers
+install(
+     FILES ${${PROJECT_NAME}_HEADERS}
+     DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+
+# Install config
+install(
+    FILES "${project_config}" "${version_config}"
+    DESTINATION "${config_install_dir}"
+)

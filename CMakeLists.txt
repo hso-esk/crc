@@ -114,7 +114,7 @@ install(EXPORT ${PROJECT_NAME}Targets
 # Install headers
 install(
      FILES ${${PROJECT_NAME}_HEADERS}
-     DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
 # Install config

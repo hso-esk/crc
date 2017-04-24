@@ -122,3 +122,6 @@ install(
     FILES "${project_config}" "${version_config}"
     DESTINATION "${config_install_dir}"
 )
+
+# add to CMake registry
+export(PACKAGE ${PROJECT_NAME})

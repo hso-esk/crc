@@ -68,11 +68,11 @@ include(GNUInstallDirs)
 
 #  Set variables
 set(config_install_dir "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
-set(generated_dir "${CMAKE_CURRENT_BINARY_DIR}/generated")
 
 # Configuration
-set(version_config "${generated_dir}/${PROJECT_NAME}-config-version.cmake")
-set(project_config "${generated_dir}/${PROJECT_NAME}-config.cmake")
+set(version_config "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake")
+set(project_config "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake")
+
 set(targets_export_name "${PROJECT_NAME}Targets")
 
 # Generate a package version file

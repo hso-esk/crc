@@ -53,7 +53,7 @@ target_include_directories(crc PRIVATE ${PROJECT_SOURCE_DIR})
 target_include_directories(crc INTERFACE "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>")
 
 # For inclusing via find_package() from install
-target_include_directories(crc INTERFACE "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
+target_include_directories(crc INTERFACE "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/sfcrc>")
 
 # Set the version
 set_target_properties(crc PROPERTIES
@@ -114,7 +114,7 @@ install(EXPORT ${PROJECT_NAME}Targets
 # Install headers
 install(
      FILES ${${PROJECT_NAME}_HEADERS}
-	 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+	 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/sfcrc
 )
 
 # Install config

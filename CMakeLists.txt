@@ -125,3 +125,52 @@ install(
 
 # add to CMake registry
 export(PACKAGE ${PROJECT_NAME})
+
+#---------------------------------------------------------------------------------------
+# CREATE DEB PACKAGE
+#---------------------------------------------------------------------------------------
+set(CPACK_GENERATOR "DEB")
+
+# check if command dpkg is available
+find_program(DPKG_CMD dpkg)
+if(DPKG_CMD)
+	message(STATUS "DEB Generator: Found dpkg: ${DPKG_CMD}")
+else()
+	message(WARNING "DEB Generator: dpkg not found")
+endif()
+
+# inform about package naming issues for cmake<3.6
+if(CMAKE_VERSION VERSION_LESS 3.6)
+	message(WARNING "DEB Generator: CMake/CPack 3.6 or higher is needed to produce correctly named packages.")
+endif()
+
+# set packaging dir
+set(CPACK_PACKAGE_DIRECTORY ${CMAKE_BINARY_DIR}/packages)
+
+# force CPack generated DEBs to use the same path as CMAKE_INSTALL_PREFIX
+#set(CPACK_SET_DESTDIR true)
+
+# manually set system arch if dpkg is not found
+if(NOT DPKG_CMD)
+	if(${CMAKE_SYSTEM_PROCESSOR} STREQUAL x86_64)
+		set(CPACK_SYSTEM_NAME amd64)
+	else()
+		set(CPACK_SYSTEM_NAME i386)
+	endif()
+endif()
+
+set(CPACK_DEBIAN_PACKAGE_NAME "libsfcrc")
+set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT) # if cmake<3.6 this is not respected
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "STACKFORCE crc module")
+set(CPACK_PACKAGE_VENDOR "STACKFORCE GmbH")
+set(CPACK_PACKAGE_CONTACT "info@stackforce.de")
+set(CPACK_DEBIAN_PACKAGE_VERSION ${PROJECT_VERSION})
+set(CPACK_DEBIAN_PACKAGE_SECTION "Development")
+set(CPACK_STRIP_FILES TRUE)
+
+# TODO handle license and readme
+#set(CPACK_PACKAGE_DESCRIPTION_FILE "${PROJECT_SOURCE_DIR}/README.rst")
+#set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE-MIT")
+
+include(CPack)

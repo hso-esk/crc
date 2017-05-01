@@ -150,8 +150,8 @@ set(CPACK_PACKAGE_DIRECTORY ${CMAKE_BINARY_DIR}/packages)
 # force CPack generated DEBs to use the same path as CMAKE_INSTALL_PREFIX
 #set(CPACK_SET_DESTDIR true)
 
-# manually set system arch if dpkg is not found
-if(NOT DPKG_CMD)
+# manually set system arch if dpkg is not found or cmake version<3.6
+if(NOT DPKG_CMD OR CMAKE_VERSION VERSION_LESS 3.6)
 	if(${CMAKE_SYSTEM_PROCESSOR} STREQUAL x86_64)
 		set(CPACK_SYSTEM_NAME amd64)
 	else()

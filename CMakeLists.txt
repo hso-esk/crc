@@ -44,19 +44,37 @@ file(GLOB "${PROJECT_NAME}_SOURCES"
 file(GLOB "${PROJECT_NAME}_HEADERS"
      ${PROJECT_SOURCE_DIR}/*.h)
 
-add_library(crc ${${PROJECT_NAME}_SOURCES})
+# intermediate object library to avoid compiling sources twice for shared and static
+add_library(crc_o OBJECT ${${PROJECT_NAME}_SOURCES})
+set_target_properties(crc_o PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+add_library(crc SHARED $<TARGET_OBJECTS:crc_o>)
+add_library(crc-static STATIC $<TARGET_OBJECTS:crc_o>)
+
+# set the output name to have the same libs names files for .so and .a
+set_target_properties(crc PROPERTIES OUTPUT_NAME crc)
+set_target_properties(crc-static PROPERTIES OUTPUT_NAME crc)
 
 # For inclusion via  add_subdirectory() work.
-target_include_directories(crc PRIVATE ${PROJECT_SOURCE_DIR})
+#target_include_directories(crc PRIVATE ${PROJECT_SOURCE_DIR})
+#target_include_directories(crc-static PRIVATE ${PROJECT_SOURCE_DIR})
 
 # For inclusing via find_package() from build 
-target_include_directories(crc INTERFACE "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>")
+target_include_directories(crc PUBLIC
+	"$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>"
+	"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/sfcrc>"
+)
 
-# For inclusing via find_package() from install
-target_include_directories(crc INTERFACE "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/sfcrc>")
+target_include_directories(crc-static PUBLIC
+	"$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>"
+	"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/sfcrc>"
+)
 
 # Set the version
 set_target_properties(crc PROPERTIES
+     VERSION  ${${PROJECT_NAME}_VERSION}
+)
+
+set_target_properties(crc-static PROPERTIES
      VERSION  ${${PROJECT_NAME}_VERSION}
 )
 
@@ -92,12 +110,10 @@ configure_package_config_file(
 
 # Install targets
 install(
-     TARGETS crc
+     TARGETS crc crc-static
      EXPORT ${targets_export_name}
-     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
      ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-     INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
 # Exported targets for build directory

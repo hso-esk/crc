@@ -62,13 +62,13 @@ set_target_properties(crc-static PROPERTIES OUTPUT_NAME crc)
 
 # For inclusing via find_package() from build 
 target_include_directories(crc PUBLIC
-	"$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>"
-	"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/sfcrc>"
+	$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
+	$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/sfcrc>
 )
 
 target_include_directories(crc-static PUBLIC
-	"$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>"
-	"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/sfcrc>"
+	$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
+	$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/sfcrc>
 )
 
 # Set the version

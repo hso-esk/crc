@@ -14,6 +14,8 @@
 ##
 cmake_minimum_required (VERSION 3.2)
 project(crc)
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 
 #---------------------------------------------------------------------------------------
 # PRODUCT AND VERSION
@@ -82,8 +84,6 @@ set_target_properties(crc-static PROPERTIES
 # INSTALLATION + CREATING PACKAGE
 #---------------------------------------------------------------------------------------
 
-include(GNUInstallDirs)
-
 #  Set variables
 set(config_install_dir "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
 
@@ -94,7 +94,6 @@ set(project_config "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake")
 set(targets_export_name "${PROJECT_NAME}Targets")
 
 # Generate a package version file
-include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
      "${version_config}"
      VERSION ${${PROJECT_NAME}_VERSION}

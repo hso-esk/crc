@@ -129,7 +129,7 @@ install(
 
 # Install config
 install(
-    FILES "${project_config}" "${version_config}"
+    FILES "${version_config}"
     DESTINATION "${config_install_dir}"
 )
 

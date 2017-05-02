@@ -100,13 +100,6 @@ write_basic_package_version_file(
      COMPATIBILITY AnyNewerVersion
 )
 
-configure_package_config_file(
-     "${PROJECT_SOURCE_DIR}/cmake/Config.cmake.in"
-     "${project_config}"
-     INSTALL_DESTINATION "${config_install_dir}"
-)
-
-
 # Install targets
 install(
      TARGETS crc crc-static

@@ -109,14 +109,16 @@ install(
 )
 
 # Exported targets for build directory
-export(EXPORT ${PROJECT_NAME}Targets
-     FILE ${project_config}
+export(
+	EXPORT ${PROJECT_NAME}Targets
+    FILE ${PROJECT_NAME}-config.cmake
 )
 
 # Exported targets for installation
-install(EXPORT ${PROJECT_NAME}Targets
-     DESTINATION ${config_install_dir}
-     FILE ${PROJECT_NAME}-targets.cmake
+install(
+	EXPORT ${PROJECT_NAME}Targets
+    DESTINATION ${config_install_dir}
+    FILE ${PROJECT_NAME}-config.cmake
 )
 
 # Install headers

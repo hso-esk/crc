@@ -84,16 +84,13 @@ set_target_properties(crc-static PROPERTIES
 # INSTALLATION + CREATING PACKAGE
 #---------------------------------------------------------------------------------------
 
-#  Set variables
+# Set variables
 set(config_install_dir "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
-
-# Configuration
 set(version_config "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake")
 set(project_config "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake")
-
 set(targets_export_name "${PROJECT_NAME}Targets")
 
-# Generate a package version file
+# Generate package version config file
 write_basic_package_version_file(
      "${version_config}"
      VERSION ${${PROJECT_NAME}_VERSION}
@@ -123,17 +120,17 @@ install(
 
 # Install headers
 install(
-     FILES ${${PROJECT_NAME}_HEADERS}
-	 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/sfcrc
+    FILES ${${PROJECT_NAME}_HEADERS}
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/sfcrc
 )
 
-# Install config
+# Install version config
 install(
     FILES "${version_config}"
     DESTINATION "${config_install_dir}"
 )
 
-# add to CMake registry
+# Add to CMake registry
 export(PACKAGE ${PROJECT_NAME})
 
 #---------------------------------------------------------------------------------------

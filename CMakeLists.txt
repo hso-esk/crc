@@ -165,9 +165,6 @@ endif()
 
 # set packaging dir
 set(CPACK_PACKAGE_DIRECTORY ${CMAKE_BINARY_DIR}/packages)
-# force CPack generated DEBs to use the same path as CMAKE_INSTALL_PREFIX
-#set(CPACK_SET_DESTDIR true)
-
 set(CPACK_DEBIAN_PACKAGE_NAME "libsfcrc")
 set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT) # if cmake<3.6 this is not respected
 set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6")

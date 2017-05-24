@@ -37,7 +37,7 @@ include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
 #---------------------------------------------------------------------------------------
-# PRODUCT AND VERSION
+# Product and version
 #---------------------------------------------------------------------------------------
 set(${PROJECT_NAME}_VERSION_MAJOR   0)
 set(${PROJECT_NAME}_VERSION_MINOR   1)
@@ -98,9 +98,8 @@ target_include_directories(sfcrc-static PUBLIC
 )
 
 #---------------------------------------------------------------------------------------
-# INSTALLATION + CREATING PACKAGE
+# Install/export targets and files
 #---------------------------------------------------------------------------------------
-
 # Set variables
 set(config_install_dir "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
 set(version_config "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake")
@@ -151,7 +150,8 @@ install(
 export(PACKAGE ${PROJECT_NAME})
 
 #---------------------------------------------------------------------------------------
-# CREATE DEB PACKAGE
+# Doxygen documentation generation
+#---------------------------------------------------------------------------------------
 #add a target to generate API documentation with Doxygen
 option(BUILD_DOCUMENTATION "Create and install the HTML based API documentation (requires Doxygen 1.8.13)" ${DOXYGEN_FOUND})
 
@@ -231,6 +231,8 @@ if(BUILD_DOCUMENTATION)
     install(DIRECTORY ${PROJECT_BINARY_DIR}/doc/html DESTINATION ${CMAKE_INSTALL_DATADIR}/doc/${PROJECT_NAME})
 endif()
 
+#---------------------------------------------------------------------------------------
+# Create debian package
 #---------------------------------------------------------------------------------------
 set(CPACK_GENERATOR "DEB")
 

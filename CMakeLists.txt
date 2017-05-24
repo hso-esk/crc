@@ -32,7 +32,7 @@
 ##
 
 cmake_minimum_required (VERSION 3.6)
-project(crc)
+project(sfcrc)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
@@ -63,37 +63,36 @@ file(GLOB "${PROJECT_NAME}_HEADERS"
      ${PROJECT_SOURCE_DIR}/*.h)
 
 # intermediate object library to avoid compiling sources twice for shared and static
-add_library(crc_o OBJECT ${${PROJECT_NAME}_SOURCES})
-set_target_properties(crc_o PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
-add_library(crc SHARED $<TARGET_OBJECTS:crc_o>)
-add_library(crc-static STATIC $<TARGET_OBJECTS:crc_o>)
+add_library(sfcrc_o OBJECT ${${PROJECT_NAME}_SOURCES})
+set_target_properties(sfcrc_o PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+add_library(sfcrc SHARED $<TARGET_OBJECTS:sfcrc_o>)
+add_library(sfcrc-static STATIC $<TARGET_OBJECTS:sfcrc_o>)
 
 # set the output name to have the same libs names files for .so and .a
-set_target_properties(crc PROPERTIES OUTPUT_NAME crc)
-set_target_properties(crc-static PROPERTIES OUTPUT_NAME crc)
-
-# For inclusion via  add_subdirectory() work.
-#target_include_directories(crc PRIVATE ${PROJECT_SOURCE_DIR})
-#target_include_directories(crc-static PRIVATE ${PROJECT_SOURCE_DIR})
-
-# For inclusing via find_package() from build 
-target_include_directories(crc PUBLIC
-	$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
-	$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/sfcrc>
-)
-
-target_include_directories(crc-static PUBLIC
-	$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
-	$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/sfcrc>
-)
+set_target_properties(sfcrc PROPERTIES OUTPUT_NAME sfcrc)
+set_target_properties(sfcrc-static PROPERTIES OUTPUT_NAME sfcrc)
 
 # Set the version
-set_target_properties(crc PROPERTIES
-     VERSION  ${${PROJECT_NAME}_VERSION}
+set_target_properties(sfcrc PROPERTIES
+    VERSION  ${${PROJECT_NAME}_VERSION}
 )
 
-set_target_properties(crc-static PROPERTIES
-     VERSION  ${${PROJECT_NAME}_VERSION}
+set_target_properties(sfcrc-static PROPERTIES
+    VERSION  ${${PROJECT_NAME}_VERSION}
+)
+# For inclusion via  add_subdirectory() work.
+#target_include_directories(sfcrc PRIVATE ${PROJECT_SOURCE_DIR})
+#target_include_directories(sfcrc-static PRIVATE ${PROJECT_SOURCE_DIR})
+
+# For inclusing via find_package() from build 
+target_include_directories(sfcrc PUBLIC
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/sfcrc>
+)
+
+target_include_directories(sfcrc-static PUBLIC
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/sfcrc>
 )
 
 #---------------------------------------------------------------------------------------
@@ -115,10 +114,10 @@ write_basic_package_version_file(
 
 # Install targets
 install(
-     TARGETS crc crc-static
-     EXPORT ${targets_export_name}
-     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    TARGETS sfcrc sfcrc-static
+    EXPORT ${targets_export_name}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
 # Exported targets for build directory

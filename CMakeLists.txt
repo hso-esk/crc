@@ -47,9 +47,6 @@ set("${PROJECT_NAME}_VERSION" ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}
 #---------------------------------------------------------------------------------------
 # TARGET
 #---------------------------------------------------------------------------------------
-# Build static libraries only
-option(BUILD_SHARED_LIBS "Set to ON to build shared libraries" OFF)
-
 # Use CRC calculation as default
 option(CRC_TABLE "Set to ON to use a look up table for crc calculation" OFF)
 

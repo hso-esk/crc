@@ -9,7 +9,9 @@
 ##
 ## @file
 ## @copyright  STACKFORCE GmbH, Heitersheim, Germany, http://www.stackforce.de
-## @author     STACKFORCE
+## @author     Lars Moellendorf
+## @author     Adrian Antonana
+## @author     Johannes Bruder
 ## @brief      Cyclic Redundancy Check (CRC) error-detecting code.
 ##
 ## This file is part of the STACKFORCE Cyclic Redundancy Check Library

@@ -124,13 +124,13 @@ install(
 
 # Exported targets for build directory
 export(
-	EXPORT ${PROJECT_NAME}Targets
+    EXPORT ${PROJECT_NAME}Targets
     FILE ${PROJECT_NAME}-config.cmake
 )
 
 # Exported targets for installation
 install(
-	EXPORT ${PROJECT_NAME}Targets
+    EXPORT ${PROJECT_NAME}Targets
     DESTINATION ${config_install_dir}
     FILE ${PROJECT_NAME}-config.cmake
 )
@@ -138,7 +138,7 @@ install(
 # Install headers
 install(
     FILES ${${PROJECT_NAME}_HEADERS}
-	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/sfcrc
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/sfcrc
 )
 
 # Install version config

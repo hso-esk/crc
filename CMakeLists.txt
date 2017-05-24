@@ -152,6 +152,85 @@ export(PACKAGE ${PROJECT_NAME})
 
 #---------------------------------------------------------------------------------------
 # CREATE DEB PACKAGE
+#add a target to generate API documentation with Doxygen
+option(BUILD_DOCUMENTATION "Create and install the HTML based API documentation (requires Doxygen 1.8.13)" ${DOXYGEN_FOUND})
+
+if(BUILD_DOCUMENTATION)
+    find_package(Doxygen 1.8.13 REQUIRED)
+
+    # variables for use by generic doxygen configuration file
+    set(DOXYGEN_PRODUCT_NAME "${${PROJECT_NAME}_PRODUCT_NAME}")
+    set(DOXYGEN_PROJECT_NUMBER "${${PROJECT_NAME}_VERSION}")
+    set(DOXYGEN_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/doc)
+    set(DOXYGEN_CUSTOM_RESOURCES_DIR ${PROJECT_BINARY_DIR}/doxygen)
+
+    string(APPEND DOXYGEN_INPUT ${PROJECT_SOURCE_DIR}/README.md " ")
+    string(APPEND DOXYGEN_INPUT ${PROJECT_SOURCE_DIR} " ")
+    string(APPEND DOXYGEN_INPUT ${PROJECT_BINARY_DIR})
+
+    message(STATUS "doxyfile input: ${DOXYGEN_INPUT}")
+
+    set(SF_CORPORATE_DESIGN_URL "INSERT_HERE_THE_URL")
+    message(STATUS "Download files for STACKFORCE corporate design:")
+#     file(DOWNLOAD
+#         "${SF_CORPORATE_DESIGN_URL}/bootstrap.min.css"
+#         ${PROJECT_BINARY_DIR}/bootstrap.min.css
+#         SHOW_PROGRESS
+#         )
+#     file(DOWNLOAD
+#         "${SF_CORPORATE_DESIGN_URL}/sf_stylesheet.css"
+#         ${PROJECT_BINARY_DIR}/sf_stylesheet.css
+#         SHOW_PROGRESS
+#         )
+#     file(DOWNLOAD
+#         "${SF_CORPORATE_DESIGN_URL}/sf_footer.html"
+#         ${PROJECT_BINARY_DIR}/sf_footer.html
+#         SHOW_PROGRESS
+#         )
+#     file(DOWNLOAD
+#         "${SF_CORPORATE_DESIGN_URL}/sf_header.html"
+#         ${PROJECT_BINARY_DIR}/sf_header.html
+#         SHOW_PROGRESS
+#         )
+#     file(DOWNLOAD
+#         "${SF_CORPORATE_DESIGN_URL}/stackforce_logo.svg"
+#         ${PROJECT_BINARY_DIR}/stackforce_logo.svg
+#         SHOW_PROGRESS
+#         )
+
+    file(COPY "${SF_CORPORATE_DESIGN_URL}/bootstrap.min.css"
+        DESTINATION ${DOXYGEN_CUSTOM_RESOURCES_DIR}
+    )
+
+    file(COPY "${SF_CORPORATE_DESIGN_URL}/sf_stylesheet.css"
+        DESTINATION ${DOXYGEN_CUSTOM_RESOURCES_DIR}
+    )
+
+    file(COPY "${SF_CORPORATE_DESIGN_URL}/sf_footer.html"
+        DESTINATION ${DOXYGEN_CUSTOM_RESOURCES_DIR}
+    )
+
+    file(COPY "${SF_CORPORATE_DESIGN_URL}/sf_header.html"
+        DESTINATION ${DOXYGEN_CUSTOM_RESOURCES_DIR}
+    )
+
+    file(COPY "${SF_CORPORATE_DESIGN_URL}/stackforce_logo.svg"
+        DESTINATION ${DOXYGEN_CUSTOM_RESOURCES_DIR}
+    )
+
+    configure_file(${SF_CORPORATE_DESIGN_URL}/Doxyfile.in
+        ${PROJECT_BINARY_DIR}/Doxyfile @ONLY)
+
+    add_custom_target(doc ALL
+        ${DOXYGEN_EXECUTABLE} ${PROJECT_BINARY_DIR}/Doxyfile
+        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+        COMMENT "Generating API documentation with Doxygen" VERBATIM
+        SOURCES ${PROJECT_BINARY_DIR}/Doxyfile
+    )
+
+    install(DIRECTORY ${PROJECT_BINARY_DIR}/doc/html DESTINATION ${CMAKE_INSTALL_DATADIR}/doc/${PROJECT_NAME})
+endif()
+
 #---------------------------------------------------------------------------------------
 set(CPACK_GENERATOR "DEB")
 

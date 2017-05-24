@@ -31,7 +31,7 @@
 ## along with libsfcrc.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-cmake_minimum_required (VERSION 3.2)
+cmake_minimum_required (VERSION 3.6)
 project(crc)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)

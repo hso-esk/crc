@@ -158,30 +158,15 @@ set(CPACK_GENERATOR "DEB")
 # check if command dpkg is available
 find_program(DPKG_CMD dpkg)
 if(DPKG_CMD)
-	message(STATUS "DEB Generator: Found dpkg: ${DPKG_CMD}")
+    message(STATUS "DEB Generator: Found dpkg: ${DPKG_CMD}")
 else()
-	message(WARNING "DEB Generator: dpkg not found")
-endif()
-
-# inform about package naming issues for cmake<3.6
-if(CMAKE_VERSION VERSION_LESS 3.6)
-	message(WARNING "DEB Generator: CMake/CPack 3.6 or higher is needed to produce correctly named packages.")
+    message(FATAL_ERROR "DEB Generator: dpkg not found")
 endif()
 
 # set packaging dir
 set(CPACK_PACKAGE_DIRECTORY ${CMAKE_BINARY_DIR}/packages)
-
 # force CPack generated DEBs to use the same path as CMAKE_INSTALL_PREFIX
 #set(CPACK_SET_DESTDIR true)
-
-# manually set system arch if dpkg is not found or cmake version<3.6
-if(NOT DPKG_CMD OR CMAKE_VERSION VERSION_LESS 3.6)
-	if(${CMAKE_SYSTEM_PROCESSOR} STREQUAL x86_64)
-		set(CPACK_SYSTEM_NAME amd64)
-	else()
-		set(CPACK_SYSTEM_NAME i386)
-	endif()
-endif()
 
 set(CPACK_DEBIAN_PACKAGE_NAME "libsfcrc")
 set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT) # if cmake<3.6 this is not respected

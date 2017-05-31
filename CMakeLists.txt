@@ -33,17 +33,21 @@
 
 cmake_minimum_required (VERSION 3.6)
 project(sfcrc VERSION 0.1.2)
+
+#---------------------------------------------------------------------------------------
+# Include required modules
+#---------------------------------------------------------------------------------------
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
 #---------------------------------------------------------------------------------------
-# Product and version
+# Product extra info
 #---------------------------------------------------------------------------------------
 set(${PROJECT_NAME}_PRODUCT_COMPANY "STACKFORCE" CACHE STRING "company")
 set(${PROJECT_NAME}_PRODUCT_NAME    "Cyclic Redundancy Check" CACHE STRING "product")
 
 #---------------------------------------------------------------------------------------
-# TARGET
+# Targets sfcrc*
 #---------------------------------------------------------------------------------------
 # Use CRC calculation as default
 option(CRC_TABLE "Set to ON to use a look up table for crc calculation" OFF)
@@ -225,7 +229,7 @@ if(BUILD_DOCUMENTATION)
 endif()
 
 #---------------------------------------------------------------------------------------
-# Create debian package
+# CPack packaging
 #---------------------------------------------------------------------------------------
 # package release version
 set(PACKAGE_RELEASE_VERSION 1)

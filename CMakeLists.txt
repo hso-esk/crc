@@ -153,9 +153,9 @@ export(PACKAGE ${PROJECT_NAME})
 # Doxygen documentation generation
 #---------------------------------------------------------------------------------------
 #add a target to generate API documentation with Doxygen
-option(BUILD_DOCUMENTATION "Create and install the HTML based API documentation (requires Doxygen 1.8.13)" ${DOXYGEN_FOUND})
+option(BUILD_DOC "Create and install the HTML based API documentation (requires Doxygen 1.8.13)" ${DOXYGEN_FOUND})
 
-if(BUILD_DOCUMENTATION)
+if(BUILD_DOC)
     find_package(Doxygen 1.8.13 REQUIRED)
 
     # variables for use by generic doxygen configuration file

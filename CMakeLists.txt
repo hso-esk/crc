@@ -9,28 +9,46 @@
 ##
 ## @file
 ## @copyright  STACKFORCE GmbH, Heitersheim, Germany, http://www.stackforce.de
-## @author     STACKFORCE
+## @author     Lars Moellendorf
+## @author     Adrian Antonana
+## @author     Johannes Bruder
 ## @brief      Cyclic Redundancy Check (CRC) error-detecting code.
 ##
-cmake_minimum_required (VERSION 3.2)
-project(crc)
+## This file is part of the STACKFORCE Cyclic Redundancy Check Library
+## (below "libsfcrc").
+##
+## libsfcrc is free software: you can redistribute it and/or modify
+## it under the terms of the GNU Affero General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
+##
+## libsfcrc is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU Affero General Public License for more details.
+##
+## You should have received a copy of the GNU Affero General Public License
+## along with libsfcrc.  If not, see <http://www.gnu.org/licenses/>.
+##
+
+cmake_minimum_required (VERSION 3.6)
+project(sfcrc VERSION 0.1.2)
+
+#---------------------------------------------------------------------------------------
+# Include required modules
+#---------------------------------------------------------------------------------------
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
 #---------------------------------------------------------------------------------------
-# PRODUCT AND VERSION
+# Product extra info
 #---------------------------------------------------------------------------------------
-set("${PROJECT_NAME}_VERSION_MAJOR" 0)
-set("${PROJECT_NAME}_VERSION_MINOR" 1)
-set("${PROJECT_NAME}_VERSION_PATCH" 2)
-set("${PROJECT_NAME}_VERSION" ${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH} )
+set(${PROJECT_NAME}_PRODUCT_COMPANY "STACKFORCE" CACHE STRING "company")
+set(${PROJECT_NAME}_PRODUCT_NAME    "Cyclic Redundancy Check" CACHE STRING "product")
 
 #---------------------------------------------------------------------------------------
-# TARGET
+# Targets sfcrc*
 #---------------------------------------------------------------------------------------
-# Build static libraries only
-option(BUILD_SHARED_LIBS "Set to ON to build shared libraries" OFF)
-
 # Use CRC calculation as default
 option(CRC_TABLE "Set to ON to use a look up table for crc calculation" OFF)
 
@@ -47,43 +65,41 @@ file(GLOB "${PROJECT_NAME}_HEADERS"
      ${PROJECT_SOURCE_DIR}/*.h)
 
 # intermediate object library to avoid compiling sources twice for shared and static
-add_library(crc_o OBJECT ${${PROJECT_NAME}_SOURCES})
-set_target_properties(crc_o PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
-add_library(crc SHARED $<TARGET_OBJECTS:crc_o>)
-add_library(crc-static STATIC $<TARGET_OBJECTS:crc_o>)
+add_library(sfcrc_o OBJECT ${${PROJECT_NAME}_SOURCES})
+set_target_properties(sfcrc_o PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+add_library(sfcrc SHARED $<TARGET_OBJECTS:sfcrc_o>)
+add_library(sfcrc-static STATIC $<TARGET_OBJECTS:sfcrc_o>)
 
 # set the output name to have the same libs names files for .so and .a
-set_target_properties(crc PROPERTIES OUTPUT_NAME crc)
-set_target_properties(crc-static PROPERTIES OUTPUT_NAME crc)
-
-# For inclusion via  add_subdirectory() work.
-#target_include_directories(crc PRIVATE ${PROJECT_SOURCE_DIR})
-#target_include_directories(crc-static PRIVATE ${PROJECT_SOURCE_DIR})
-
-# For inclusing via find_package() from build 
-target_include_directories(crc PUBLIC
-	$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
-	$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/sfcrc>
-)
-
-target_include_directories(crc-static PUBLIC
-	$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
-	$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/sfcrc>
-)
+set_target_properties(sfcrc PROPERTIES OUTPUT_NAME sfcrc)
+set_target_properties(sfcrc-static PROPERTIES OUTPUT_NAME sfcrc)
 
 # Set the version
-set_target_properties(crc PROPERTIES
-     VERSION  ${${PROJECT_NAME}_VERSION}
+set_target_properties(sfcrc PROPERTIES
+    VERSION  ${${PROJECT_NAME}_VERSION}
 )
 
-set_target_properties(crc-static PROPERTIES
-     VERSION  ${${PROJECT_NAME}_VERSION}
+set_target_properties(sfcrc-static PROPERTIES
+    VERSION  ${${PROJECT_NAME}_VERSION}
+)
+# For inclusion via  add_subdirectory() work.
+#target_include_directories(sfcrc PRIVATE ${PROJECT_SOURCE_DIR})
+#target_include_directories(sfcrc-static PRIVATE ${PROJECT_SOURCE_DIR})
+
+# For inclusing via find_package() from build 
+target_include_directories(sfcrc PUBLIC
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/sfcrc>
+)
+
+target_include_directories(sfcrc-static PUBLIC
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/sfcrc>
 )
 
 #---------------------------------------------------------------------------------------
-# INSTALLATION + CREATING PACKAGE
+# Install/export targets and files
 #---------------------------------------------------------------------------------------
-
 # Set variables
 set(config_install_dir "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
 set(version_config "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake")
@@ -99,21 +115,21 @@ write_basic_package_version_file(
 
 # Install targets
 install(
-     TARGETS crc crc-static
-     EXPORT ${targets_export_name}
-     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    TARGETS sfcrc sfcrc-static
+    EXPORT ${targets_export_name}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
 # Exported targets for build directory
 export(
-	EXPORT ${PROJECT_NAME}Targets
+    EXPORT ${PROJECT_NAME}Targets
     FILE ${PROJECT_NAME}-config.cmake
 )
 
 # Exported targets for installation
 install(
-	EXPORT ${PROJECT_NAME}Targets
+    EXPORT ${PROJECT_NAME}Targets
     DESTINATION ${config_install_dir}
     FILE ${PROJECT_NAME}-config.cmake
 )
@@ -121,7 +137,7 @@ install(
 # Install headers
 install(
     FILES ${${PROJECT_NAME}_HEADERS}
-	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/sfcrc
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/sfcrc
 )
 
 # Install version config
@@ -134,50 +150,120 @@ install(
 export(PACKAGE ${PROJECT_NAME})
 
 #---------------------------------------------------------------------------------------
-# CREATE DEB PACKAGE
+# Doxygen documentation generation
 #---------------------------------------------------------------------------------------
-set(CPACK_GENERATOR "DEB")
+#add a target to generate API documentation with Doxygen
+option(BUILD_DOCUMENTATION "Create and install the HTML based API documentation (requires Doxygen 1.8.13)" ${DOXYGEN_FOUND})
 
-# check if command dpkg is available
-find_program(DPKG_CMD dpkg)
-if(DPKG_CMD)
-	message(STATUS "DEB Generator: Found dpkg: ${DPKG_CMD}")
-else()
-	message(WARNING "DEB Generator: dpkg not found")
+if(BUILD_DOCUMENTATION)
+    find_package(Doxygen 1.8.13 REQUIRED)
+
+    # variables for use by generic doxygen configuration file
+    set(DOXYGEN_PRODUCT_NAME "${${PROJECT_NAME}_PRODUCT_NAME}")
+    set(DOXYGEN_PROJECT_NUMBER "${${PROJECT_NAME}_VERSION}")
+    set(DOXYGEN_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/doc)
+    set(DOXYGEN_CUSTOM_RESOURCES_DIR ${PROJECT_BINARY_DIR}/doxygen)
+	set(DOWNLOADED_MODUELES_DIR ${PROJECT_BINARY_DIR}/cmake)
+
+    string(APPEND DOXYGEN_INPUT ${PROJECT_SOURCE_DIR}/README.md " ")
+    string(APPEND DOXYGEN_INPUT ${PROJECT_SOURCE_DIR} " ")
+    string(APPEND DOXYGEN_INPUT ${PROJECT_BINARY_DIR})
+
+    message(STATUS "doxyfile input: ${DOXYGEN_INPUT}")
+
+    set(SF_CORPORATE_DESIGN_URL "https://raw.githubusercontent.com/stackforce/corporate-design-doxygen/develop")
+    message(STATUS "Download files for STACKFORCE doxygen corporate design:")
+
+    file(DOWNLOAD
+        "${SF_CORPORATE_DESIGN_URL}/cmake/DoxygenRequiredVersion.cmake"
+        "${DOWNLOADED_MODUELES_DIR}/DoxygenRequiredVersion.cmake"
+        SHOW_PROGRESS
+    )
+
+    file(DOWNLOAD
+        "${SF_CORPORATE_DESIGN_URL}/Doxyfile.in"
+        "${DOXYGEN_CUSTOM_RESOURCES_DIR}/Doxyfile.in"
+        SHOW_PROGRESS
+        )
+
+    file(DOWNLOAD
+        "${SF_CORPORATE_DESIGN_URL}/bootstrap.min.css"
+        "${DOXYGEN_CUSTOM_RESOURCES_DIR}/bootstrap.min.css"
+        SHOW_PROGRESS
+        )
+    file(DOWNLOAD
+        "${SF_CORPORATE_DESIGN_URL}/sf_stylesheet.css"
+        "${DOXYGEN_CUSTOM_RESOURCES_DIR}/sf_stylesheet.css"
+        SHOW_PROGRESS
+        )
+    file(DOWNLOAD
+        "${SF_CORPORATE_DESIGN_URL}/sf_footer.html"
+        "${DOXYGEN_CUSTOM_RESOURCES_DIR}/sf_footer.html"
+        SHOW_PROGRESS
+        )
+    file(DOWNLOAD
+        "${SF_CORPORATE_DESIGN_URL}/sf_header.html"
+        "${DOXYGEN_CUSTOM_RESOURCES_DIR}/sf_header.html"
+        SHOW_PROGRESS
+        )
+    file(DOWNLOAD
+        "${SF_CORPORATE_DESIGN_URL}/stackforce_logo.svg"
+        "${DOXYGEN_CUSTOM_RESOURCES_DIR}/stackforce_logo.svg"
+        SHOW_PROGRESS
+        )
+
+    list(APPEND CMAKE_MODULE_PATH ${DOWNLOADED_MODUELES_DIR})
+    include(DoxygenRequiredVersion)
+
+    configure_file(${DOXYGEN_CUSTOM_RESOURCES_DIR}/Doxyfile.in
+        ${PROJECT_BINARY_DIR}/Doxyfile @ONLY)
+
+    add_custom_target(doc ALL
+        ${DOXYGEN_EXECUTABLE} ${PROJECT_BINARY_DIR}/Doxyfile
+        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+        COMMENT "Generating API documentation with Doxygen" VERBATIM
+        SOURCES ${PROJECT_BINARY_DIR}/Doxyfile
+    )
+
+    install(DIRECTORY ${PROJECT_BINARY_DIR}/doc/html DESTINATION ${CMAKE_INSTALL_DATADIR}/doc/${PROJECT_NAME})
 endif()
 
-# inform about package naming issues for cmake<3.6
-if(CMAKE_VERSION VERSION_LESS 3.6)
-	message(WARNING "DEB Generator: CMake/CPack 3.6 or higher is needed to produce correctly named packages.")
+#---------------------------------------------------------------------------------------
+# CPack packaging
+#---------------------------------------------------------------------------------------
+# package release version
+set(PACKAGE_RELEASE_VERSION 1)
+
+# determine distribution and architecture
+execute_process(COMMAND lsb_release -si OUTPUT_VARIABLE LINUX_DISTRO OUTPUT_STRIP_TRAILING_WHITESPACE)
+execute_process(COMMAND uname -m OUTPUT_VARIABLE MACHINE_ARCH OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+# default CPack generators
+set(CPACK_GENERATOR TGZ STGZ)
+
+# extra CPack generators
+if(LINUX_DISTRO STREQUAL "Debian" OR LINUX_DISTRO STREQUAL "Ubuntu" OR LINUX_DISTRO STREQUAL "LinuxMint")
+    list(APPEND CPACK_GENERATOR DEB)
 endif()
 
-# set packaging dir
+# general CPack config
 set(CPACK_PACKAGE_DIRECTORY ${CMAKE_BINARY_DIR}/packages)
-
-# force CPack generated DEBs to use the same path as CMAKE_INSTALL_PREFIX
-#set(CPACK_SET_DESTDIR true)
-
-# manually set system arch if dpkg is not found or cmake version<3.6
-if(NOT DPKG_CMD OR CMAKE_VERSION VERSION_LESS 3.6)
-	if(${CMAKE_SYSTEM_PROCESSOR} STREQUAL x86_64)
-		set(CPACK_SYSTEM_NAME amd64)
-	else()
-		set(CPACK_SYSTEM_NAME i386)
-	endif()
-endif()
-
-set(CPACK_DEBIAN_PACKAGE_NAME "libsfcrc")
-set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT) # if cmake<3.6 this is not respected
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "STACKFORCE crc module")
-set(CPACK_PACKAGE_VENDOR "STACKFORCE GmbH")
+message(STATUS "CPack: packages will be generated under ${CPACK_PACKAGE_DIRECTORY}")
+set(CPACK_PACKAGE_NAME "lib${PROJECT_NAME}")
+set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${${PROJECT_NAME}_PRODUCT_COMPANY} ${${PROJECT_NAME}_PRODUCT_NAME}")
+set(CPACK_PACKAGE_VENDOR "${${PROJECT_NAME}_PRODUCT_COMPANY} GmbH")
 set(CPACK_PACKAGE_CONTACT "info@stackforce.de")
-set(CPACK_DEBIAN_PACKAGE_VERSION ${${PROJECT_NAME}_VERSION})
-set(CPACK_DEBIAN_PACKAGE_SECTION "devel")
-set(CPACK_STRIP_FILES TRUE)
+set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE")
+set(CPACK_PACKAGE_FILE_NAME ${CPACK_PACKAGE_NAME}_${CPACK_PACKAGE_VERSION}-${PACKAGE_RELEASE_VERSION}_Linux-${MACHINE_ARCH})
+set(CPACK_STRIP_FILES ON)
 
-# TODO handle license and readme
-#set(CPACK_PACKAGE_DESCRIPTION_FILE "${PROJECT_SOURCE_DIR}/README.rst")
-#set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE-MIT")
+# debian specific CPack config
+set(CPACK_DEBIAN_PACKAGE_RELEASE ${PACKAGE_RELEASE_VERSION})
+set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
+set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://github.com/stackforce")
+set(CPACK_DEBIAN_PACKAGE_SECTION "devel")
 
 include(CPack)
+

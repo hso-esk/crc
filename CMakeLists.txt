@@ -32,7 +32,7 @@
 ##
 
 cmake_minimum_required (VERSION 3.6)
-project(sfcrc VERSION 0.1.2)
+project(sfcrc VERSION 0.1.3)
 
 #---------------------------------------------------------------------------------------
 # Include required modules
